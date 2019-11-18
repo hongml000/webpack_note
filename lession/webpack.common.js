@@ -3,10 +3,9 @@ const path = require('path')
 const HttpWebpackPlugin = require('html-webpack-plugin')
 // 新的写法必须写成对象形式
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const webpack = require('webpack')
+
 module.exports = {
-  mode: 'production',  //如果不写默认为production模式:一行压缩显示；development则不压缩
-  devtool: 'source-map',
+
   // entry: './src/index.js',
   entry: {
     main: './src/index.js',
@@ -22,20 +21,6 @@ module.exports = {
     调用resolve方法，第一个参数__dirname代码当前配置文件（webpack.config.js）所在的目录
     */
     path: path.resolve(__dirname,'dist')
-  },
-  devServer: {
-    // 说明打开的服务内容从哪来
-    contentBase: path.join(__dirname, 'dist'),
-    // 自动打开浏览器，默认是chrome打开
-    open: true,
-    // 设置代理，请求到/api/user的接口，会自动请求到http://localhost:3000/user
-    // proxy: {
-    //   '/api': 'http://localhost:3000'
-    // },
-    // 开启hot module replacement开关
-    hot: true,
-    // 即使HMR不成功，也不刷新页面
-    hotOnly: true
   },
   module: {
     rules: [{
@@ -126,9 +111,5 @@ module.exports = {
       template: './index.html'
     }),
     new CleanWebpackPlugin(),
-    new webpack.HotModuleReplacementPlugin()
-  ],
-  optimization: {
-    usedExports: true
-  }
+  ]
 } 
