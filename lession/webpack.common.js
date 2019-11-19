@@ -8,8 +8,8 @@ module.exports = {
 
   // entry: './src/index.js',
   entry: {
-    main: './src/index.js',
-    // sub: './src/index.js'
+    // loadash_im: './src/loadash_im.js',
+    main: './src/index.js'
   },
   output: {
     // 在输出的文件名前，增加前缀
@@ -99,7 +99,8 @@ module.exports = {
               "regenerator": true, 
               "useESModules": false
             }
-          ]
+          ],
+          "babel-plugin-dynamic-import-webpack"
         ]
       }
     }
@@ -111,5 +112,10 @@ module.exports = {
       template: './index.html'
     }),
     new CleanWebpackPlugin(),
-  ]
+  ],
+  optimization:{
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
 } 

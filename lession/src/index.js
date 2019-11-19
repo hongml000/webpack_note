@@ -76,5 +76,29 @@
 // })
 
 // 实现tree shaking
-import { add } from './math.js'
-add(1,2);
+// import { add } from './math.js'
+// add(1,2);
+
+// 代码分割
+
+// 未分割前
+// import _ from 'lodash'
+
+// // 分割后  
+// // ... 此处省略n行业务代码 假设有1Mb
+// console.log(_.join(['a','b','c'],' '))
+
+
+// 按需加载
+function getComponent() {
+  // 动态加载包，原本是不支持的，需要安装一个包：npm install babel-plugin-dynamic-import-webpack
+  return import('lodash').then(({ default: _ }) => {
+    var ele = document.createElement('div');
+    ele.innerHTML = _.join(['dell', 'lee'], '-');
+    return ele;
+  })
+}
+
+getComponent().then( ele => {
+  document.body.appendChild(ele);
+})
