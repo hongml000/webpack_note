@@ -90,15 +90,43 @@
 
 
 // 按需加载
-function getComponent() {
-  // 动态加载包，原本是不支持的，需要安装一个包：npm install babel-plugin-dynamic-import-webpack
-  return import('lodash').then(({ default: _ }) => {
-    var ele = document.createElement('div');
-    ele.innerHTML = _.join(['dell', 'lee'], '-');
-    return ele;
-  })
-}
+// function getComponent() {
+//   // 动态加载包，原本是不支持的，需要安装一个包：npm install babel-plugin-dynamic-import-webpack
+//   return import(/* webpackChunkName:"lodash" */ 'lodash').then((module) => {
+//     var ele = document.createElement('div');
+//     console.log(module)
+//     ele.innerHTML = module.join(['dell', 'lee'], '-');
+//     return ele;
+//   })
+// }
 
-getComponent().then( ele => {
-  document.body.appendChild(ele);
+// 使用async await简化promise
+// async function getComponent() {
+//   const module = await import(/* webpackChunkName:"lodash" */ 'lodash');
+//   var ele = document.createElement('div');
+//   console.log(module)
+//   ele.innerHTML = module.join(['dell', 'lee'], '-');
+//   return ele;
+// }
+
+// document.addEventListener('click', () => {
+//   getComponent().then( ele => {
+//     document.body.appendChild(ele);
+//   })
+// })
+
+
+// 例子：提高网页利用率后
+document.addEventListener('click', () => {
+  // default: func 是将导出的默认default名给改了
+  import(/* webpackPrefetch:true */ './prefetch_exp.js').then(( {default: func}) => {
+    console.log(func)
+    func(); 
+  })
+  
+  // // 注意，如果直接导入的是整个模块，而不是一个方法
+  // import('./prefetch_exp.js').then(module => {
+  //   console.log(module)
+  //   module.default(); 
+  // })
 })

@@ -100,7 +100,7 @@ module.exports = {
               "useESModules": false
             }
           ],
-          "babel-plugin-dynamic-import-webpack"
+          "@babel/plugin-syntax-dynamic-import"
         ]
       }
     }
@@ -115,7 +115,11 @@ module.exports = {
   ],
   optimization:{
     splitChunks: {
-      chunks: 'all'
+      chunks: 'async'
+      // cacheGroups: {
+      //   vendors: false,
+      // default: false
+      // }
     }
   }
 } 
