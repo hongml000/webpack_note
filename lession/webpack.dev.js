@@ -20,8 +20,8 @@ const devConfig = {
     new webpack.HotModuleReplacementPlugin()
   ],
   optimization: {
-    usedExports: true
   }
 } 
 
 module.exports = merge(devConfig, commonConfig)
+// module.exports = devConfig;

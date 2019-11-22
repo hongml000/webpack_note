@@ -117,16 +117,42 @@
 
 
 // 例子：提高网页利用率后
-document.addEventListener('click', () => {
-  // default: func 是将导出的默认default名给改了
-  import(/* webpackPrefetch:true */ './prefetch_exp.js').then(( {default: func}) => {
-    console.log(func)
-    func(); 
-  })
+// document.addEventListener('click', () => {
+//   // default: func 是将导出的默认default名给改了
+//   import(/* webpackPrefetch:true */ './prefetch_exp.js').then(( {default: func}) => {
+//     console.log(func)
+//     func(); 
+//   })
   
   // // 注意，如果直接导入的是整个模块，而不是一个方法
   // import('./prefetch_exp.js').then(module => {
   //   console.log(module)
   //   module.default(); 
   // })
-})
+// })
+
+
+// 11：css分割
+// import './layout.css'
+// import './layout1.css'
+// console.log('css code splitting')
+
+
+// 14: shimming
+// import xx from 'lodash'
+// import $ from 'jquery'
+// import { print } from './save/lodash_im.js/index.js'
+// // console.log(_.join(['hello','webpack'], ' '));
+// $('body').css('background','red')
+// print()
+
+
+// console.log(this)  // 默认指向当前模块 {}
+
+let lesson = require('lesson2-hongml')
+console.log(lesson)
+
+// import math from 'lesson2-hongml'
+// console.log(math.math)
+
+// console.log('hello')

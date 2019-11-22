@@ -3,8 +3,16 @@ const path = require('path')
 const HttpWebpackPlugin = require('html-webpack-plugin')
 // 新的写法必须写成对象形式
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const webpack = require('webpack');
+// let path = require('path')
+// 使用全局变量的写法
+// const merge = require('webpack-merge')
+// const prodConfig = require('./webpack.prod.js')
+// const devConfig = require('./webpack.dev.js')
 
-module.exports = {
+commonConfig = {
 
   // entry: './src/index.js',
   entry: {
@@ -15,12 +23,12 @@ module.exports = {
     // 在输出的文件名前，增加前缀
     // publicPath: 'http://www.cdn.com.cn',
     // 生成的文件名
-    filename: '[name].js',
+    path: path.resolve(__dirname,'dist'),
+    filename: '[name].[contenthash].js'
     /* 
     path必须写的绝对路径，如果想获取当前绝对路径目录，需要导入path包
     调用resolve方法，第一个参数__dirname代码当前配置文件（webpack.config.js）所在的目录
     */
-    path: path.resolve(__dirname,'dist')
   },
   module: {
     rules: [{
@@ -45,11 +53,22 @@ module.exports = {
       ]
     },{
       test: /\.css$/,
-      use: ['style-loader', 'css-loader']
+      use: [
+        // 如果是平常的css可以使用style-loader，但是如果是要做css代码分割，就要使用minicssextractplugin来替代
+        // 'style-loader', 
+        {
+          loader: MiniCssExtractPlugin.loader,
+        },
+        'css-loader'
+      ]
     },{
       test: /\.scss$/,
       use: [
-        'style-loader',
+        // 如果是平常的css可以使用style-loader，但是如果是要做css代码分割，就要使用minicssextractplugin来替代
+        // 'style-loader',
+        {
+          loader: MiniCssExtractPlugin.loader,
+        },
         // 如果需要配置详细的设置，就要写成对象格式
         {
           loader: 'css-loader',
@@ -70,56 +89,85 @@ module.exports = {
     { 
       test: /\.js$/, 
       exclude: /node_modules/, 
-      loader: "babel-loader",
-      options: {
-        // 将es6语法翻译成es5语法
-        // "presets": [
-        //   [
-        //     "@babel/preset-env",
-        //     {
-        //       // 不是把所有plyfill整个文件加载，而是按需加载，这样生成的文件就会小很多
-        //       "useBuiltIns": 'usage',
-        //       // 当使用useBuiltIns属性时，要写对应的corejs版本，否则会有警告
-        //       "corejs":2,
-        //       // 所使用的目标是chrome 58版本，ie 11版本
-        //       "targets": {
-        //         "chrome": "58",
-        //         "ie": "11"
-        //       } 
-        //     }
-        //   ]
-        // ]
-        "plugins": [
-          [
-            "@babel/plugin-transform-runtime",
-            {
-              "absoluteRuntime": false,
-              "corejs": 2,
-              "helpers": true,
-              "regenerator": true, 
-              "useESModules": false
-            }
-          ],
-          "@babel/plugin-syntax-dynamic-import"
-        ]
-      }
+      // 原来只使用babel-loader一个
+      // loader: "babel-loader",
+      // 要使用多个loader时，使用use数组
+      use: [
+        {
+          loader: "babel-loader",
+          options: {
+            // 将es6语法翻译成es5语法
+            // "presets": [
+            //   [
+            //     "@babel/preset-env",
+            //     {
+            //       // 不是把所有plyfill整个文件加载，而是按需加载，这样生成的文件就会小很多
+            //       "useBuiltIns": 'usage',
+            //       // 当使用useBuiltIns属性时，要写对应的corejs版本，否则会有警告
+            //       "corejs":2,
+            //       // 所使用的目标是chrome 58版本，ie 11版本
+            //       "targets": {
+            //         "chrome": "58",
+            //         "ie": "11"
+            //       } 
+            //     }
+            //   ]
+            // ]
+            "plugins": [
+              [
+                "@babel/plugin-transform-runtime",
+                {
+                  "absoluteRuntime": false,
+                  "corejs": 2,
+                  "helpers": true,
+                  "regenerator": true, 
+                  "useESModules": false
+                }
+              ],
+              "@babel/plugin-syntax-dynamic-import"
+            ]
+          }
+        },{
+          loader: "imports-loader?this=>window"
+        }
+      ],
+      
     }
   ]
   },
   plugins: [
     // 以./index.html作为模板，在bundle目录下自动生成一个index.html文件
     new HttpWebpackPlugin({
-      template: './index.html'
+      template: 'index.html',
+      inject: true
     }),
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+      ignoreOrder: false
+    }),
+    new webpack.ProvidePlugin({
+      xx: 'lodash',
+      $: 'jquery'
+    })
   ],
   optimization:{
+    // tree shaking开关
+    usedExports: true,
     splitChunks: {
       chunks: 'async'
-      // cacheGroups: {
-      //   vendors: false,
-      // default: false
-      // }
-    }
+    },
+    minimizer: [new OptimizeCSSAssetsPlugin({})]
   }
-} 
+}
+
+module.exports = commonConfig;
+// 全局变量设置
+// module.exports = (env) => {
+//   if(env && env.production) {
+//     return merge(commonConfig, prodConfig)
+//   }else {
+//     return merge(commonConfig, devConfig)
+//   }
+// }
