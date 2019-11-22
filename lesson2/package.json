@@ -1,0 +1,17 @@
+{
+  "name": "lesson2-hongml",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/lesson2.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}
